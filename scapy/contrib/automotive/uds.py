@@ -439,7 +439,10 @@ bind_layers(UDS, UDS_AUTHPR, service=0x69)
 class UDS_TP(Packet):
     name = 'TesterPresent'
     fields_desc = [
-        ByteField('subFunction', 0)
+        # Per spec TP doesn't have a subFunction and field
+        # observations indicate sending an extra 0x00 does
+        # not always elicit the desired response.
+        # ByteField('subFunction', 0)
     ]
 
 
@@ -1387,7 +1390,7 @@ bind_layers(UDS, UDS_NR, service=0x7f)
 
 
 class UDS_TesterPresentSender(PeriodicSenderThread):
-    def __init__(self, sock, pkt=UDS() / UDS_TP(subFunction=0x80), interval=2):
+    def __init__(self, sock, pkt=UDS() / UDS_TP(), interval=2):
         """ Thread to send TesterPresent messages packets periodically
 
         Args:
